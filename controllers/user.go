@@ -15,13 +15,17 @@ import (
 	"gorm.io/gorm"
 )
 
+func SignUpPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "signup.tmpl", gin.H{})
+}
+
 func SignUp(c *gin.Context) {
 	var userData models.User
 
 	if err := c.Bind(&userData); err != nil {
 		//if the json is not valid, return a bad request
 		log.Println("Error binding JSON: ", err)
-		c.JSON(400, gin.H{"message": "Error binding JSON"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error binding JSON"})
 		return
 	}
 
@@ -30,7 +34,7 @@ func SignUp(c *gin.Context) {
 	if err != nil {
 		//if there is an error, print it and return a bad request
 		log.Println("Error hashing password: ", err)
-		c.JSON(400, gin.H{"message": "Error hashing password"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error hashing password"})
 		return
 	}
 
@@ -40,13 +44,17 @@ func SignUp(c *gin.Context) {
 	if result.Error != nil {
 		//if there is an error, print it and return a bad request
 		log.Println("Error creating user: ", result.Error)
-		c.JSON(400, gin.H{"message": "Error creating user"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error creating user"})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "User created successfully",
 	})
+}
+
+func LoginPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.tmpl", gin.H{})
 }
 
 func Login(c *gin.Context) {
@@ -55,7 +63,7 @@ func Login(c *gin.Context) {
 	if err := c.Bind(&userData); err != nil {
 		//if the json is not valid, return a bad request
 		log.Println("Error binding JSON: ", err)
-		c.JSON(400, gin.H{"message": "Error binding JSON"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error binding JSON"})
 		return
 	}
 
@@ -66,10 +74,10 @@ func Login(c *gin.Context) {
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			//id not found
-			c.JSON(404, gin.H{"message": "Resource not found"})
+			c.JSON(http.StatusNotFound, gin.H{"message": "Resource not found"})
 		} else {
 			//400 for other errors
-			c.JSON(400, gin.H{"message": "Bad request"})
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Bad request"})
 		}
 		return
 	}
@@ -78,7 +86,7 @@ func Login(c *gin.Context) {
 
 	if err != nil {
 		log.Println("Invalid e-mail or password: ", err)
-		c.JSON(400, gin.H{"message": "Invalid e-mail or password"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid e-mail or password"})
 		return
 	}
 
@@ -92,17 +100,23 @@ func Login(c *gin.Context) {
 
 	if err != nil {
 		log.Println("Error creating token: ", err)
-		c.JSON(400, gin.H{"message": "Error creating token"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error creating token"})
 		return
 	}
 	//no https so no SameSiteNoneMode
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("jwt", tokenString, 3600*24, "", "", false, true)
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Success",
 	})
 }
+
+func Home(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{})
+}
+
+/*testing only
 
 func Validate(c *gin.Context) {
 	user, _ := c.Get("user")
@@ -111,3 +125,5 @@ func Validate(c *gin.Context) {
 		"message": user,
 	})
 }
+
+*/

@@ -15,17 +15,29 @@ func init() {
 func main() {
 	r := gin.Default()
 
+	r.LoadHTMLGlob("templates/**/*")
+	r.Static("/assets", "./assets")
+
+	r.GET("/", controllers.Home)
+	r.GET("/signup", controllers.SignUpPage)
 	r.POST("/signup", controllers.SignUp)
+	r.GET("/login", controllers.LoginPage)
 	r.POST("/login", controllers.Login)
 
-	r.GET("/validate", middleware.AuthMiddleware, controllers.Validate) //just for testing
+	//r.GET("/validate", middleware.AuthMiddleware, controllers.Validate) //just for testing
 
 	//CRUD
-	r.POST("/products", middleware.AuthMiddleware, controllers.CreateProduct)
-	r.GET("/products", middleware.AuthMiddleware, controllers.GetProducts)
-	r.GET("/products/:id", controllers.GetProductById)
-	r.PUT("/products/:id", middleware.AuthMiddleware, controllers.UpdateProductById)
-	r.DELETE("/products/:id", middleware.AuthMiddleware, controllers.DeleteProductById)
+	r.GET("/product", middleware.AuthMiddleware, controllers.CreateProductPage)
+	r.POST("/product", middleware.AuthMiddleware, controllers.CreateProduct)
+	r.GET("/products", controllers.GetProducts)
+	r.GET("/product/:id", controllers.GetProductById)
+	r.PUT("/product/edit/:id", middleware.AuthMiddleware, controllers.UpdateProductById)
+	r.DELETE("/product/delete/:id", middleware.AuthMiddleware, controllers.DeleteProductById)
+
+	/* Works for html but not ideal for security
+	r.GET("/product/edit/:id", middleware.AuthMiddleware, controllers.UpdateProductById)
+	r.GET("/product/delete/:id", middleware.AuthMiddleware, controllers.DeleteProductById)
+	*/
 
 	r.Run()
 }

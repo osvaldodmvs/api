@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/osvaldodmvs/api/initializers"
@@ -11,20 +12,26 @@ import (
 	"gorm.io/gorm"
 )
 
+func CreateProductPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "newProduct.tmpl", gin.H{})
+}
+
 func CreateProduct(c *gin.Context) {
 	var product models.Product
 
 	if err := c.Bind(&product); err != nil {
 		//if the json is not valid, return a bad request
 		log.Println("Error binding JSON: ", err)
-		c.JSON(400, gin.H{"message": "Error binding JSON"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error binding JSON"})
 		return
 	}
+
+	log.Println("Product category: ", product.Category)
 
 	valid := utils.IsValidCategory(product.Category)
 
 	if !valid {
-		c.JSON(400, gin.H{"message": "Invalid category"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid category"})
 		return
 	}
 
@@ -37,11 +44,11 @@ func CreateProduct(c *gin.Context) {
 	if result.Error != nil {
 		//if there is an error, print it and return a bad request
 		log.Println("Error creating product: ", result.Error)
-		c.JSON(400, gin.H{"message": "Error creating product"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error creating product"})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"post": post,
 	})
 }
@@ -55,11 +62,11 @@ func GetProducts(c *gin.Context) {
 	if result.Error != nil {
 		//if there is an error, print it and return a bad request
 		log.Println("Error finding products: ", result.Error)
-		c.JSON(400, gin.H{"message": "Error finding products"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error finding products"})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.HTML(http.StatusOK, "products.tmpl", gin.H{
 		"products": products,
 	})
 }
@@ -74,16 +81,17 @@ func GetProductById(c *gin.Context) {
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			//id not found
-			c.JSON(404, gin.H{"message": "Resource not found"})
+			c.HTML(http.StatusNotFound, "productDNE.tmpl", gin.H{})
+			//c.JSON(http.StatusNotFound, gin.H{"message": "Resource not found"})
 		} else {
-			//400 for other errors
-			c.JSON(400, gin.H{"message": "Bad request"})
+			//http.StatusBadRequest for other errors
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Bad request"})
 		}
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"product {" + id + "}": product,
+	c.HTML(http.StatusOK, "product.tmpl", gin.H{
+		"product": product,
 	})
 }
 
@@ -99,10 +107,10 @@ func UpdateProductById(c *gin.Context) {
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			//id not found
-			c.JSON(404, gin.H{"message": "Resource not found"})
+			c.JSON(http.StatusNotFound, gin.H{"message": "Resource not found"})
 		} else {
-			//400 for other errors
-			c.JSON(400, gin.H{"message": "Bad request"})
+			//http.StatusBadRequest for other errors
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Bad request"})
 		}
 		return
 	}
@@ -113,14 +121,14 @@ func UpdateProductById(c *gin.Context) {
 	if err := c.Bind(&reqProduct); err != nil {
 		//if the json is not valid, return a bad request
 		log.Println("Error binding JSON: ", err)
-		c.JSON(400, gin.H{"message": "Error binding JSON"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Error binding JSON"})
 		return
 	}
 
 	initializers.DB.Model(&product).Updates(models.Product{
 		Name: reqProduct.Name, Description: reqProduct.Description, Price: reqProduct.Price, Stock: reqProduct.Stock, Rating: reqProduct.Rating})
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"product {" + id + "} updated": product,
 	})
 }
@@ -132,11 +140,11 @@ func DeleteProductById(c *gin.Context) {
 
 	if result.RowsAffected == 0 {
 		//id doesn't exist, can't delete anything
-		c.JSON(404, gin.H{"message": "Resource not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Resource not found"})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"product {" + id + "} deleted": "true",
 	})
 }

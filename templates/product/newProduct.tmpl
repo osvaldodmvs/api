@@ -1,0 +1,48 @@
+{{template "header" .}}
+
+<div class="width">
+    <form action="/product" method="post">
+        <h1>New Product</h1>
+        <br>
+        <br>
+        <label for="name">Name</label>
+        <br>
+        <input type="text" name="name" id="name" placeholder="Name" required>
+        <br>
+        <br>
+        <label for="description">Description</label>
+        <br>
+        <input type="text" name="description" id="description" placeholder="Description" required>
+        <br>
+        <br>
+        <label for="price">Price</label>
+        <br>
+        <input type="number" name="price" id="price" placeholder="Price" required>
+        <br>
+        <br>
+        <label for="stock">Stock</label>
+        <br>
+        <input type="number" id="stock" name="stock" required>
+        <br>
+        <label for="category">Category</label>
+        <br>
+        <select id="category" name="category">
+            <option value="electronics">Electronics</option>
+            <option value="books">Books</option>
+            <option value="food">Food</option>
+            <option value="clothing">Clothing</option>
+            <option value="tools">Tools</option>
+            <option value="other">Other</option>
+        </select>
+        <br>
+        <br>
+        <label for="rating">Rating</label>
+        <br>
+        <input type="number" id="rating" name="rating" step="0.1" min="1" max="5" required>
+        <br>
+        <br>
+        <input type="submit" value="Create">
+    </form>
+</div>
+
+{{template "footer" .}}

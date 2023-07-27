@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #111;
+    font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, "Open Sans", "Helvetica Neue", sans-serif;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+  .products {
+    padding: 60px 0;
+  }
+  
+  .width {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .products h1 {
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 900;
+    text-align: center;
+    font-size: 21px;
+  }
+  
+  .products-table {
+    border-top: 1px solid #ddd;
+  }
+  
+  .product-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .product-row.head {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgb(150, 150, 150);
+    position: sticky;
+    top: 0;
+    background: white;
+  }
+  
+  .product-row-id {
+    width: 50px;
+  }
+
+  .product-row-description{
+    padding-left: 10px;
+    width: 200px;
+  }
+
+  
+  .product-row-details{
+    flex: 1;
+    padding-left: 10px;
+    padding-right: 10px;    
+  }
+  
+  .pagination {
+    text-align: center;
+    margin: 40px auto;
+  }
+  
+  .pagination ul {
+    display: inline-flex;
+    align-items: center;
+    list-style: none;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  
+  .pagination li + li {
+    border-left: 1px solid #ddd;
+  }
+  
+  .pagination a,
+  .pagination span {
+    display: block;
+    line-height: 40px;
+    padding: 0 16px;
+    color: #111;
+  }
+  
+  .pagination a {
+    transition: 0.2s color;
+  }
+  
+  .pagination a:hover {
+    color: #3094ff;
+  }
+  
+  .pagination span {
+    background-color: #f9f9f9;
+    color: #999;
+    cursor: default;
+    user-select: none;
+  }

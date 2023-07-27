@@ -1,0 +1,62 @@
+{{template "header" .}}
+
+<div class="products">
+  <div class="width">
+    <h1>Products</h1>
+
+    <div class="products-table">
+
+      <div class="product-row head">
+        <div class="product-row-id">ID</div>
+        <div class="product-row-details">Name</div>
+        <div class="product-row-description">Description</div>
+        <div class="product-row-details">Price</div>
+        <div class="product-row-details">Stock</div>
+        <div class="product-row-details">Category</div>
+        <div class="product-row-details">Rating</div>
+        <div class="product-row-details"></div>
+        <div class="product-row-details"></div>
+      </div>
+
+      {{ range .products }}
+      <div class="product-row">
+        <div class="product-row-id">
+          <a href="/product/{{ .ID }}">{{ .ID }}</a>
+        </div>
+        <div class="product-row-details">
+          {{ .Name }}
+        </div>
+        <div class="product-row-description">
+          {{ .Description }}
+        </div>
+        <div class="product-row-details">
+          {{ .Price }}
+        </div>
+        <div class="product-row-details">
+          {{ .Stock }}
+        </div>
+        <div class="product-row-details">
+          {{ .Category }}
+        </div>
+        <div class="product-row-details">
+          {{ .Rating }}
+        </div>
+        <div class="product-row-details">
+          <a href="/product/edit/{{.ID}}" style="color:aquamarine">Edit</a>
+        </div>
+        <div class="product-row-details">
+          <a href="/product/delete/{{.ID}}" style="color: red;">Delete</a>
+        </div>
+      </div>
+      {{ end }}
+      
+      <br>
+      <a href="/product"><button>Create new product</button></a>
+      <br>
+      <br>
+      <a href="/"><button>Go back</button></a>
+    </div>
+  </div>
+</div>
+
+{{template "footer" .}}
